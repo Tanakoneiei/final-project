@@ -24,7 +24,7 @@ class LoginScreen extends StatelessWidget {
             CircleAvatar(
               radius: 100,
               backgroundImage: NetworkImage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQli1KYQx8wP9qfcq1qfsV2BcJWSVHv5DKmRQ&usqp=CAU"),
+                  "https://st3.depositphotos.com/15827064/18712/v/600/depositphotos_187129200-stock-illustration-contacts-handle-handset-phone-phone.jpg"),
             ),
             const SizedBox(
               height: 20,
