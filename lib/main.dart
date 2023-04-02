@@ -1,0 +1,125 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:project/screens/edit_item_screen.dart';
+import 'package:project/screens/login_screen.dart';
+import 'package:project/screens/new_item_screen.dart';
+import 'package:project/services/auth_service.dart';
+
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Notes',
+      theme: ThemeData(
+        primarySwatch: Colors.brown,
+        scaffoldBackgroundColor: Colors.white70,
+      ),
+      home: LoginScreen(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  AuthService _service = AuthService();
+
+  @override
+  Widget build(BuildContext context) {
+    User? currentUser = _service.user;
+    String displayEmail = "";
+    if (currentUser != null && currentUser.email != null) {
+      displayEmail = currentUser.email!;
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            DrawerHeader(
+              decoration: const BoxDecoration(color: Color.fromARGB(2255, 186, 131, 97)),
+              child: Row(
+                children: [
+                  SizedBox(width: 8.0),
+                  Text("ยินดีต้อนรับ $displayEmail")
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.pinkAccent),
+              title: const Text("ลงชื่อออก"),
+              onTap: () {
+                _service.logout(currentUser);
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    (route) => false);
+              },
+            )
+          ],
+        ),
+      ),
+
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection("items").snapshots(),
+        builder: ((context, snapshot) {
+          final dataDocuments = snapshot.data?.docs;
+          if (dataDocuments == null) return const Text("No data");
+          return ListView.builder(
+            itemCount: dataDocuments.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(dataDocuments[index]["phone"].toString()),
+                subtitle: Text(dataDocuments[index]["name"].toString()),
+                onTap: () => _editItemScreen(dataDocuments[index].id,
+                    dataDocuments[index]["phone"], dataDocuments[index]["name"]),
+              );
+            },
+          );
+        }),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _createNewItem,
+        tooltip: 'New Item',
+        child: const Icon(Icons.add),
+      ),
+    
+    );
+  }
+
+  void _createNewItem() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => NewItemScreen()));
+  }
+
+
+  _editItemScreen(String documentid, String itemName, String itemPhone) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                EditItemScreen(documentid, itemName, itemPhone)));
+  }
+}
