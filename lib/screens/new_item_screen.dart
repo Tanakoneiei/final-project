@@ -46,7 +46,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: _addItem,
-                    child: Text("บันทึก"),
+                    child: Text("เพิ่มข้อมูล"),
                   ),
                 ),
               ],
