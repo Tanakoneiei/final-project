@@ -44,10 +44,11 @@ class _NewItemScreenState extends State<NewItemScreen> {
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: _addItem,
-                    child: Text("เพิ่มข้อมูล"),
-                  ),
+                  child: ElevatedButton.icon(
+    onPressed: _addItem,
+    icon: Icon(Icons.add),
+    label: Text("เพิ่มข้อมูล"),
+  ),
                 ),
               ],
             ),
@@ -65,7 +66,8 @@ class _NewItemScreenState extends State<NewItemScreen> {
       "phone": _itemPhone.text,
     });
 
-    showDialog(
+    //แสดงสถานนะ
+    showDialog( 
       context: context,
       builder: (context) => AlertDialog(
         title: Text("เพิ่มข้อมูลเรียบร้อยแล้ว"),
