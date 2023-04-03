@@ -9,9 +9,10 @@ class EditItemScreen extends StatefulWidget {
   final TextEditingController _itemName = TextEditingController();
   final TextEditingController _itemPhone = TextEditingController();
 
-  EditItemScreen(this.documentId, String itemName, String itemPhone) {
-    _itemName.text = itemName;
+  EditItemScreen(this.documentId, String itemPhone ,String itemName) {
     _itemPhone.text = itemPhone;
+    _itemName.text = itemName;
+    
   }
 
   @override
@@ -32,11 +33,11 @@ class _EditItemScreenState extends State<EditItemScreen> {
         child: Column(
           children: [
             TextField(
-              controller: widget._itemName,
+              controller: widget._itemPhone,
               decoration: const InputDecoration(label: Text("เบอร์โทร")),
             ),
             TextField(
-              controller: widget._itemPhone,
+              controller: widget._itemName,
               decoration: const InputDecoration(label: Text("ชื่อ")),
             ),
             const SizedBox(
@@ -46,22 +47,38 @@ class _EditItemScreenState extends State<EditItemScreen> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.redAccent,
-                        onPrimary: Colors.white,
-                      ),
-                      onPressed: _deleteItem,
-                      child: const Text("ลบ")),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.redAccent,
+                      onPrimary: Colors.white,
+                    ),
+                    onPressed: _deleteItem,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.delete),
+                        const SizedBox(width: 10),
+                        const Text("ลบ"),
+                      ],
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(2255, 186, 131, 97),
-                        onPrimary: Colors.white,
-                      ),
-                      onPressed: _editItem,
-                      child: const Text("แก้ไข")),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(2255, 186, 131, 97),
+                      onPrimary: Colors.white,
+                    ),
+                    onPressed: _editItem,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.edit),
+                        const SizedBox(width: 10),
+                        const Text("แก้ไข"),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -72,13 +89,15 @@ class _EditItemScreenState extends State<EditItemScreen> {
   }
 
   void _editItem() {
-    final String newName = widget._itemName.text;
     final String newPhone = widget._itemPhone.text;
+    final String newName = widget._itemName.text;
+    
 
-    if (newName.isNotEmpty && newPhone.isNotEmpty) {
+    if (newPhone.isNotEmpty && newName.isNotEmpty ) {
       _itemService.updateItem(widget.documentId, {
-        'name': newName,
         'phone': newPhone,
+        'name': newName,
+        
       }).then((value) {
         Navigator.pop(context);
       }).catchError((error) {
