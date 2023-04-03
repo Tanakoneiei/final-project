@@ -57,30 +57,72 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       drawer: Drawer(
-        child: ListView(
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(color: Color.fromARGB(2255, 186, 131, 97)),
-              child: Row(
-                children: [
-                  SizedBox(width: 8.0),
-                  Text("ยินดีต้อนรับ $displayEmail")
-                ],
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.logout, color: Colors.pinkAccent),
-              title: const Text("ลงชื่อออก"),
-              onTap: () {
-                _service.logout(currentUser);
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                    (route) => false);
-              },
-            )
-          ],
-        ),
+  child: Container(
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Color.fromARGB(255, 136, 73, 52),
+          Color.fromARGB(255, 166, 109, 89),
+          Colors.brown.shade100,
+        ],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
       ),
+    ),
+    child: ListView(
+      children: [
+        DrawerHeader(
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            image: DecorationImage(
+              image: AssetImage('assets/images/drawer_header.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  "ยินดีต้อนรับ $displayEmail",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Text(
+                  "สมุดรายชื่อรวม",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        ListTile(
+          leading: Icon(Icons.logout, color: Colors.white),
+          title: Text(
+            "ลงชื่อออก",
+            style: TextStyle(color: Colors.white),
+          ),
+          onTap: () {
+            _service.logout(currentUser);
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+              (route) => false,
+            );
+          },
+        ),
+      ],
+    ),
+  ),
+),
 
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection("items").snapshots(),
